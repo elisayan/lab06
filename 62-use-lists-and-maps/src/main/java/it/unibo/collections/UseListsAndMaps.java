@@ -58,18 +58,25 @@ public final class UseListsAndMaps {
         long time = System.nanoTime();
         for (int i = 1; i <= 100000; i++) {
             array.set(0, i);
-            list.set(0, i);
         }
         time = System.nanoTime() - time;
         final var millis = TimeUnit.NANOSECONDS.toMillis(time);
-        System.out.println("Inserting 100.000 elements in ArrayList and LinkedList took " + time + "ns (" + millis + "ms)");
+        System.out.println("Inserting 100.000 elements in ArrayList took " + time + "ns (" + millis + "ms)");
+        
+        long time1 = System.nanoTime();
+        for (int i = 1; i <= 100000; i++) {
+            list.set(0, i);
+        }
+        time1 = System.nanoTime() - time1;
+        final var millis1 = TimeUnit.NANOSECONDS.toMillis(time1);
+        System.out.println("Inserting 100.000 elements in LinkedList took " + time1 + "ns (" + millis1 + "ms)");
         /*
          * 6) Measure the performance of reading 1000 times an element whose
          * position is in the middle of the collection for both ArrayList and
          * LinkedList, using the collections of point 5. In order to measure
          * times, use as example TestPerformance.java.
          */
-        
+
         /*
          * 7) Build a new Map that associates to each continent's name its
          * population:
