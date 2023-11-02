@@ -1,6 +1,7 @@
 package it.unibo.collections;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public final class UseListsAndMaps {
          */
         long time = System.nanoTime();
         for (int i = 1; i <= 100000; i++) {
-            array.set(0, i);
+            array.add(0, i);
         }
         time = System.nanoTime() - time;
         final var millis = TimeUnit.NANOSECONDS.toMillis(time);
@@ -65,7 +66,7 @@ public final class UseListsAndMaps {
         
         long time1 = System.nanoTime();
         for (int i = 1; i <= 100000; i++) {
-            list.set(0, i);
+            list.add(0, i);
         }
         time1 = System.nanoTime() - time1;
         final var millis1 = TimeUnit.NANOSECONDS.toMillis(time1);
@@ -76,7 +77,21 @@ public final class UseListsAndMaps {
          * LinkedList, using the collections of point 5. In order to measure
          * times, use as example TestPerformance.java.
          */
+        long time2 = System.nanoTime();
+        for (int i = 1; i <= 1000; i++) {            
+            array.get(array.size()/2);
+        }
+        time2 = System.nanoTime() - time2;
+        final var millis2 = TimeUnit.NANOSECONDS.toMillis(time2);
+        System.out.println("Reading 1000 times an element in the middle of array took " + time2 + "ns (" + millis2 + "ms)");
 
+        long time3 = System.nanoTime();
+        for (int i = 1; i <= 1000; i++) {            
+            array.get(array.size()/2);
+        }
+        time3 = System.nanoTime() - time3;
+        final var millis3 = TimeUnit.NANOSECONDS.toMillis(time3);
+        System.out.println("Reading 1000 times an element in the middle of array took " + time3 + "ns (" + millis3 + "ms)");
         /*
          * 7) Build a new Map that associates to each continent's name its
          * population:
@@ -93,8 +108,20 @@ public final class UseListsAndMaps {
          *
          * Oceania -> 38,304,000
          */
+        Map<String, Long> map = new HashMap<>();
+        map.put("Africa", 1110635000L);
+        map.put("Americas", 972005000L);
+        map.put("Antarctica", 0L);
+        map.put("Asia", 4298723000L);
+        map.put("Europe", 742252000L);
+        map.put("Oceania", 38304000L);
         /*
          * 8) Compute the population of the world
          */
+        Long sumLong = 0L;
+        for (Long l : map.values()) {
+            sumLong = sumLong + l;
+        }
+        System.out.println(sumLong);
     }
 }
