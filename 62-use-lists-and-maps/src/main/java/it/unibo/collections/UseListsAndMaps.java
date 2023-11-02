@@ -82,16 +82,16 @@ public final class UseListsAndMaps {
             array.get(array.size()/2);
         }
         time2 = System.nanoTime() - time2;
-        final var millis2 = TimeUnit.NANOSECONDS.toMillis(time2);
-        System.out.println("Reading 1000 times an element in the middle of array took " + time2 + "ns (" + millis2 + "ms)");
+        final double millis2 = TimeUnit.NANOSECONDS.toMillis(time2);
+        System.out.println("Reading 1000 times an element in the middle of array took " + time2 + " ns (" + millis2 + "ms)");
 
         long time3 = System.nanoTime();
         for (int i = 1; i <= 1000; i++) {            
             array.get(array.size()/2);
         }
         time3 = System.nanoTime() - time3;
-        final var millis3 = TimeUnit.NANOSECONDS.toMillis(time3);
-        System.out.println("Reading 1000 times an element in the middle of array took " + time3 + "ns (" + millis3 + "ms)");
+        final double millis3 = TimeUnit.NANOSECONDS.toMillis(time3);
+        System.out.println("Reading 1000 times an element in the middle of array took " + time3 + " ns (" + millis3 + "ms)");
         /*
          * 7) Build a new Map that associates to each continent's name its
          * population:
