@@ -113,7 +113,7 @@ public final class UseListsAndMaps {
         map.put("Americas", 972005000L);
         map.put("Antarctica", 0L);
         map.put("Asia", 4298723000L);
-        map.put("Europe", 742252000L);
+        map.put("Europe", 742452000L);
         map.put("Oceania", 38304000L);
         /*
          * 8) Compute the population of the world
