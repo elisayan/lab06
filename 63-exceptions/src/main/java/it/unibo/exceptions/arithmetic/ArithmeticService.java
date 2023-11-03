@@ -56,58 +56,62 @@ public final class ArithmeticService {
      */
     public String process() {
         if (commandQueue.isEmpty()) {
-            System.out.println("No commands sent, no result available");
+            throwIllegalStateException("No commands sent, no result available");
         }
-        while (commandQueue.size() != 1) {
-            final var nextMultiplication = commandQueue.indexOf(TIMES);
-            final var nextDivision = commandQueue.indexOf(DIVIDED);
-            final var nextPriorityOp = nextMultiplication >= 0 && nextDivision >= 0
-                ? min(nextMultiplication, nextDivision)
-                : max(nextMultiplication, nextDivision);
-            if (nextPriorityOp >= 0) {
-                computeAt(nextPriorityOp);
-            } else {
-                final var nextSum = commandQueue.indexOf(PLUS);
-                final var nextMinus = commandQueue.indexOf(MINUS);
-                final var nextOp = nextSum >= 0 && nextMinus >= 0
-                    ? min(nextSum, nextMinus)
-                    : max(nextSum, nextMinus);
-                if (nextOp != -1) {
-                    if (commandQueue.size() < 3) {
-                        System.out.println("Inconsistent operation: " + commandQueue);
+        try {
+            while (commandQueue.size() != 1) {
+                final var nextMultiplication = commandQueue.indexOf(TIMES);
+                final var nextDivision = commandQueue.indexOf(DIVIDED);
+                final var nextPriorityOp = nextMultiplication >= 0 && nextDivision >= 0
+                        ? min(nextMultiplication, nextDivision)
+                        : max(nextMultiplication, nextDivision);
+                if (nextPriorityOp >= 0) {
+                    computeAt(nextPriorityOp);
+                } else {
+                    final var nextSum = commandQueue.indexOf(PLUS);
+                    final var nextMinus = commandQueue.indexOf(MINUS);
+                    final var nextOp = nextSum >= 0 && nextMinus >= 0
+                            ? min(nextSum, nextMinus)
+                            : max(nextSum, nextMinus);
+                    if (nextOp != -1) {
+                        if (commandQueue.size() < 3) {
+                            throwIllegalStateException("Inconsistent operation: " + commandQueue);
+                        }
+                        computeAt(nextOp);
+                    } else if (commandQueue.size() > 1) {
+                        throwIllegalStateException("Inconsistent state: " + commandQueue);
                     }
-                    computeAt(nextOp);
-                } else if (commandQueue.size() > 1) {
-                    System.out.println("Inconsistent state: " + commandQueue);
                 }
             }
-        }
-        final var finalResult = commandQueue.get(0);
-        final var possibleException = nullIfNumberOrException(finalResult);
-        if (possibleException != null) {
-            System.out.println("Invalid result of operation: " + finalResult);
-        }
-        return finalResult;
+            final var finalResult = commandQueue.get(0);
+            final var possibleException = nullIfNumberOrException(finalResult);
+            if (possibleException != null) {
+                throwIllegalStateException("Invalid result of operation: " + finalResult);
+            }
+            return finalResult;
         /*
          * The commandQueue should be cleared, no matter what, when the method exits
          * But how?
          */
+        } finally {
+            commandQueue.clear();
+        }        
     }
 
     private void computeAt(final int operatorIndex) {
         if (operatorIndex == 0) {
-            System.out.println("Illegal start of operation: " + commandQueue);
+            throwIllegalStateException("Illegal start of operation: " + commandQueue);
         }
         if (commandQueue.size() < 3) {
-            System.out.println("Not enough operands: " + commandQueue);
+            throwIllegalStateException("Not enough operands: " + commandQueue);
         }
         if (commandQueue.size() < operatorIndex + 1) {
-            System.out.println("Missing right operand: " + commandQueue);
+            throwIllegalStateException("Missing right operand: " + commandQueue);
         }
         final var rightOperand = commandQueue.remove(operatorIndex + 1);
         final var leftOperand = commandQueue.remove(operatorIndex - 1);
         if (KEYWORDS.contains(rightOperand) || KEYWORDS.contains(leftOperand)) {
-            System.out.println(
+            throwIllegalStateException(
                 "Expected a number, but got " + leftOperand + " and " + rightOperand + " in " + commandQueue
             );
         }
@@ -120,10 +124,18 @@ public final class ArithmeticService {
             case TIMES -> left * right;
             case DIVIDED -> left / right;
             default ->  {
-                System.out.println("Unknown operand " + operand);
+                throwIllegalStateException("Unknown operand " + operand);
                 yield Double.NaN;
             }
         };
         commandQueue.set(operatorIndex - 1, Double.toString(result));
+    }
+
+    private void throwIllegalStateException(String message) {
+        throw new IllegalStateException(message);
+    }
+
+    private void throwIllegalStateException(String message, Throwable cause) {
+        throw new IllegalStateException(message, cause);
     }
 }
