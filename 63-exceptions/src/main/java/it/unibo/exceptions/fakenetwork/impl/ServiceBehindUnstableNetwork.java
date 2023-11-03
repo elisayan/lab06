@@ -38,6 +38,9 @@ public final class ServiceBehindUnstableNetwork implements NetworkComponent {
      */
     public ServiceBehindUnstableNetwork(final double failProbability) {
         this(failProbability, 0);
+        if (failProbability >= 0.0 && failProbability < 1.0) {
+            throw new IllegalArgumentException("Probability must be within the range [0, 1)");
+        }        
     }
 
     /**
