@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,7 +37,7 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      * In order to save the people followed by a user organized in groups, adopt
      * a generic-type Map:  think of what type of keys and values would best suit the requirements
      */
-
+    private final Map<String, Collection<U>> map = new HashMap<>();
     /*
      * [CONSTRUCTORS]
      *
@@ -47,7 +48,8 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      * - lastName
      * - username
      * - age and every other necessary field
-     */
+     */  
+
     /**
      * Builds a user participating in a social network.
      *
@@ -62,23 +64,32 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      *            application
      */
     public SocialNetworkUserImpl(final String name, final String surname, final String user, final int userAge) {
-        super(null, null, null, 0);
+        super(name, surname, user, userAge);
     }
 
     /*
      * 2) Define a further constructor where the age defaults to -1
      */
-
     /*
      * [METHODS]
      *
      * Implements the methods below
      */
     @Override
-    public boolean addFollowedUser(final String circle, final U user) {
-        return false;
+    public boolean addFollowedUser(final String circle, final U user) {        
+        if (this.map.containsKey(circle)) {
+            if (this.map.get(circle).contains(user)) {
+                return false;
+            } else {
+                this.map.get(circle).add(user);
+                return true;
+            }
+        } else {
+            this.map.put(circle, new HashSet<>());
+           this. map.get(circle).add(user);
+            return true;
+        }
     }
-
     /**
      *
      * [NOTE] If no group with groupName exists yet, this implementation must
@@ -86,11 +97,18 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      */
     @Override
     public Collection<U> getFollowedUsersInGroup(final String groupName) {
-        return null;
+        if(this.map.containsKey(groupName)){
+            return new HashSet<>(this.map.get(groupName));
+        }
+        return new HashSet<>();
     }
 
     @Override
     public List<U> getFollowedUsers() {
-        return null;
+        List<U> list = new ArrayList<>();
+        for (Collection<U> u : map.values()) {
+            list.addAll(u);
+        }
+        return list;
     }
 }
