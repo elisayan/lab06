@@ -30,11 +30,50 @@ public class GraphImpl<N> implements Graph<N> {
 
     @Override
     public Set<N> linkedNodes(N node) {
+        System.out.println(this.graph.keySet());
         return this.graph.get(node);
     }
 
     @Override
     public List<N> getPath(N source, N target) {
-        
+        List<N> pathList = new LinkedList<>();
+        if (source == null || target == null) {
+            return pathList;
+        }
+
+        List<N> toVisit = new LinkedList<>();
+        Map<N, N> parentMap = new HashMap<>();
+        Set<N> visited = new HashSet<>();
+
+        toVisit.add(source);
+        visited.add(source);
+
+        while (!toVisit.isEmpty()) {
+            N currentNode = toVisit.remove(0);
+
+            Set<N> neighbors = linkedNodes(currentNode);
+
+            for (N n : neighbors) {
+                if(!visited.contains(neighbors)) {
+                    parentMap.put(n, currentNode);
+                    visited.add(n);
+                    if (n.equals(target)) {
+                        N node = target;
+                        while (node != null) {
+                            pathList.add(node);
+                            node = parentMap.get(node);
+                        }
+                        List<N> reversePath = new LinkedList<>();
+                        for (int i = pathList.size() - 1; i >= 0; i--) {
+                            reversePath.add(pathList.get(i));
+                        }
+                        return pathList;
+                    }
+                    toVisit.add(n);
+                }
+            }
+        }
+
+        return pathList;
     } 
 }
